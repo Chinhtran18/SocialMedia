@@ -1,2 +1,2 @@
 # SocialMedia
-A social media for graduated student and teacher is used to post
+A social media for alumnies and teacher is used to post
