@@ -5,20 +5,18 @@ from django.db import models
 
 
 class User(AbstractUser):
-    media = models.ForeignKey('Media', on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='users/avatars', null=True)
+    cover = models.ImageField(upload_to='users/covers', null=True)
+    is_Lecturer = models.BooleanField(default=False)
+
+    def change_password_lecturer(self):
+        if self.is_Lecturer.__eq__(True):
+            self.set_password("ou@123")
 
 
-class Media(models.Model):
-    avatar = models.ImageField(upload_to='users/%Y/%m')
-    cover = models.ImageField(upload_to='users/%Y/%m')
+class Alumni(User):
+    student_id = models.CharField(max_length=11, unique=True)
 
 
-class StudentProfile(models.Model):
-    student_id = models.CharField(max_length=11)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-
-class LecturerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user = models.Pa
-
+class Lecturer(User):
+    password = "ou@123"
