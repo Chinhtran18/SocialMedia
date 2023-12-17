@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from ckeditor.fields import RichTextField
@@ -14,34 +15,38 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class Media(models.Model):
-    avatar = models.ImageField(upload_to='users/avatars/%Y/%m')
-    cover_images = models.ImageField(upload_to='users/cover_images/%Y/%m')
-
-
 class CustomUser(AbstractUser):
-    media = models.ForeignKey(Media, on_delete=models.CASCADE, null=True)
+    avatar = models.ImageField(upload_to='users/avatars/%Y/%m', null=True)
+    cover_images = models.ImageField(upload_to='users/cover_images/%Y/%m', null=True)
+
+    def __str__(self):
+        return self.username
 
 
 class AlumniProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     student_id = models.CharField(max_length=10, unique=True)
-    confirmed = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False)
 
 
 class LecturerProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.user.password = make_password('ou@123')
+        super().save(*args, **kwargs)
+
 
 class Post(BaseModel):
     content = RichTextField()
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='posts')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='posts')
 
 
 class Comment(BaseModel):
     content = RichTextField()
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
-    post = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
 
 
 class Reaction(BaseModel):
@@ -58,16 +63,18 @@ class Reaction(BaseModel):
 
 
 class Survey(BaseModel):
-    title = RichTextField()
-    choice = models.ForeignKey('Choice', on_delete=models.CASCADE)
+    title = models.TextField()
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='surveys')
 
 
-class Choice(models.Model):
+class Question(models.Model):
     content = models.TextField()
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name='questions')
 
 
-class Event(BaseModel):
-    content = RichTextField()
+class Notification(BaseModel):
+    content = models.TextField()
+    sender = models.ManyToManyField(CustomUser, related_name='notifications')
 
 
 # Group.objects.get_or_create(name='AlumniProfile')
