@@ -28,6 +28,9 @@ class AlumniProfile(models.Model):
     student_id = models.CharField(max_length=10, unique=True)
     is_student = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('user', 'student_id')
+
 
 class LecturerProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -74,9 +77,5 @@ class Question(models.Model):
 
 class Notification(BaseModel):
     content = models.TextField()
-    sender = models.ManyToManyField(CustomUser, related_name='notifications')
+    receiver = models.ManyToManyField(CustomUser, related_name='Notifications')
 
-
-# Group.objects.get_or_create(name='AlumniProfile')
-# Group.objects.get_or_create(name='LecturerProfile')
-# Group.objects.get_or_create(name='Administrator')
