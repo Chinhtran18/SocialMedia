@@ -20,16 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fx+yvajt_1u7sh&dzar1%+ac4*sf+o(2k_dhz^$!l_6=^79wi9'
+SECRET_KEY = 'django-insecure-aq63dsjf0x16kk3+a_18^_)$(=z)8ydxw02_1(=7(agyf3&4sv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-import pymysql
-pymysql.install_as_MySQLdb()
 
 # Application definition
 
@@ -40,10 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core.apps.CoreConfig',
     'ckeditor',
     'ckeditor_uploader',
-    'debug_toolbar'
+    'socialnetwork.apps.SocialnetworkConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -54,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'socialmedia.urls'
@@ -81,13 +77,17 @@ WSGI_APPLICATION = 'socialmedia.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+import pymysql
+pymysql.install_as_MySQLdb()
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'socialappdb',
-        'USER': 'root',
-        'PASSWORD': 'Admin@123',
-        'HOST': ''  # mặc định localhost
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME': 'socialnetworkdb',
+         'USER': 'root',
+         'PASSWORD': 'Admin@123',
+         'HOST': ''
     }
 }
 
@@ -126,23 +126,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+MEDIA_ROOT = '%s/socialnetwork/static/' % BASE_DIR
+
 STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
 
-AUTH_USER_MODEL = 'core.CustomUser'
-
-MEDIA_ROOT = '%s/core/static/' % BASE_DIR
+AUTH_USER_MODEL = 'socialnetwork.User'
 

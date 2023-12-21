@@ -14,13 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include, re_path
+from socialnetwork.admin import admin_site
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    path("__debug__/", include("debug_toolbar.urls")),
-
+    path('admin/', admin_site.urls),
+    path('', include('socialnetwork.urls')),
 ]
